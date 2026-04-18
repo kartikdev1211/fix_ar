@@ -1,6 +1,9 @@
-import 'package:fix_ar/constants/constant.dart';
+import 'package:fix_ar/screens/onboarding/bloc/onboarding_bloc.dart';
+import 'package:fix_ar/screens/onboarding/bloc/onboarding_event.dart';
+import 'package:fix_ar/screens/onboarding/bloc/onboarding_state.dart';
 import 'package:fix_ar/widgets/onboarding_illustration_panel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingData {
@@ -53,15 +56,15 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
+
   late AnimationController _contentController;
   late Animation<double> _contentFade;
   late Animation<Offset> _contentSlide;
 
   @override
   void initState() {
-    _initContentAnimation();
     super.initState();
+    _initContentAnimation();
   }
 
   void _initContentAnimation() {
@@ -69,32 +72,39 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _contentFade = CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
+
+    _contentFade =
+        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
+
     _contentSlide =
         Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero).animate(
           CurvedAnimation(parent: _contentController, curve: Curves.easeOut),
         );
+
     _contentController.forward();
   }
 
   void _onPageChanged(int index) {
-    setState(() => _currentPage = index);
+    context.read<OnboardingBloc>().add(PageChanged(index));
+
     _contentController.reset();
     _contentController.forward();
   }
 
-  void _nextPage() {
-    if (_currentPage < onboardingSlides.length - 1) {
+  void _nextPage(OnboardingState state) {
+    if (!state.isLastPage) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
-    } else {
-      Navigator.pushReplacementNamed(context, "/auth");
     }
+
+    context.read<OnboardingBloc>().add(NextPressed());
   }
 
-  void _skip() => Navigator.pushReplacementNamed(context, "/auth");
+  void _skip() {
+    context.read<OnboardingBloc>().add(SkipPressed());
+  }
 
   @override
   void dispose() {
@@ -105,48 +115,73 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            itemBuilder: (context, index) {
-              return OnboardingIllustrationPanel(
-                illustration: onboardingSlides[index].illustration,
-              );
-            },
-          ),
-          Align(alignment: Alignment.bottomCenter, child: _buildBottomSheet()),
-          Positioned(
-            top: 80, right: 20,
-            child: GestureDetector(
-              onTap: _skip,
-              child: Text(
-                "Skip",
-                style: GoogleFonts.dmSans(
-                  fontSize: 20,
-                  color: AppColors.white30,
-                  fontWeight: FontWeight.w400,
-                ),
+    return BlocProvider(
+      create: (_) => OnboardingBloc(),
+      child: BlocListener<OnboardingBloc, OnboardingState>(
+        listener: (context, state) {
+          if (state.navigateToAuth) {
+            Navigator.pushReplacementNamed(context, "/auth");
+          }
+        },
+        child: BlocBuilder<OnboardingBloc, OnboardingState>(
+          builder: (context, state) {
+            final slide = onboardingSlides[state.currentPage];
+            final isLast = state.isLastPage;
+
+            return Scaffold(
+              backgroundColor: const Color(0xFF080810),
+              body: Stack(
+                children: [
+                  PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: _onPageChanged,
+                    itemCount: onboardingSlides.length,
+                    itemBuilder: (context, index) {
+                      return OnboardingIllustrationPanel(
+                        illustration: onboardingSlides[index].illustration,
+                      );
+                    },
+                  ),
+
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: _buildBottomSheet(state),
+                  ),
+
+                  Positioned(
+                    top: 80,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: _skip,
+                      child: Text(
+                        "Skip",
+                        style: GoogleFonts.dmSans(
+                          fontSize: 20,
+                          color: Colors.white30,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildBottomSheet() {
-    final slide = onboardingSlides[_currentPage];
-    final isLast = _currentPage == onboardingSlides.length - 1;
+  Widget _buildBottomSheet(OnboardingState state) {
+    final slide = onboardingSlides[state.currentPage];
+    final isLast = state.isLastPage;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.sheet)),
-        border: Border.all(color: AppColors.teal, width: 1),
+        color: const Color(0xFF0D0D1A),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        border: Border.all(color: const Color(0xFF00D2B4), width: 1),
       ),
       padding: const EdgeInsets.fromLTRB(28, 28, 28, 48),
       child: FadeTransition(
@@ -155,50 +190,62 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDotIndicators(),
+            _buildDotIndicators(state),
             const SizedBox(height: 24),
+
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
                     text: slide.title,
                     style: GoogleFonts.syne(
-                      fontSize: 28, fontWeight: FontWeight.w800,
-                      color: Colors.white, letterSpacing: -0.5, height: 1.15,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.5,
+                      height: 1.15,
                     ),
                   ),
                   TextSpan(
                     text: slide.titleHighlight,
                     style: GoogleFonts.syne(
-                      fontSize: 28, fontWeight: FontWeight.w800,
-                      color: AppColors.teal, letterSpacing: -0.5, height: 1.15,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF00D2B4),
+                      letterSpacing: -0.5,
+                      height: 1.15,
                     ),
                   ),
                 ],
               ),
             ),
+
             const SizedBox(height: 14),
+
             Text(
               slide.description,
               style: GoogleFonts.dmSans(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
-                color: AppColors.white45,
+                color: Colors.white.withOpacity(0.45),
                 height: 1.65,
               ),
             ),
+
             const SizedBox(height: 32),
-            _buildCTAButton(isLast),
+
+            _buildCTAButton(state, isLast),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDotIndicators() {
+  Widget _buildDotIndicators(OnboardingState state) {
     return Row(
       children: List.generate(onboardingSlides.length, (index) {
-        final isActive = index == _currentPage;
+        final isActive = index == state.currentPage;
+
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -207,31 +254,38 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           height: 7,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            gradient: isActive ? AppGradients.brand : null,
-            color: isActive ? null : AppColors.white12,
+            gradient: isActive
+                ? const LinearGradient(
+              colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
+            )
+                : null,
           ),
         );
       }),
     );
   }
 
-  Widget _buildCTAButton(bool isLast) {
+  Widget _buildCTAButton(OnboardingState state, bool isLast) {
     return GestureDetector(
-      onTap: _nextPage,
+      onTap: () => _nextPage(state),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         width: double.infinity,
         height: 34,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          gradient: AppGradients.brand,
+          borderRadius: BorderRadius.circular(16),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
+          ),
         ),
         child: Center(
           child: Text(
             isLast ? "Get Started" : "Next",
             style: GoogleFonts.syne(
-              fontSize: 15, fontWeight: FontWeight.w700,
-              color: Colors.white, letterSpacing: 0.3,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              letterSpacing: 0.3,
             ),
           ),
         ),

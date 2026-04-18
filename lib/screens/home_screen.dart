@@ -1,12 +1,12 @@
-import 'package:fix_ar/constants/constant.dart';
 import 'package:fix_ar/screens/profile_screen.dart';
 import 'package:fix_ar/screens/setting_screen.dart';
 import 'package:fix_ar/screens/tutorial_screen.dart';
 import 'package:fix_ar/widgets/feature_cards.dart';
+import 'package:fix_ar/widgets/app_widgets.dart';
+import 'package:fix_ar/constants/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// ── MODELS (unchanged)
 class RepairCategory {
   final String label;
   final Color color;
@@ -33,7 +33,6 @@ class RecentRepair {
   });
 }
 
-// ── STATIC DATA (unchanged)
 const List<RepairCategory> repairCategories = [
   RepairCategory(label: 'All',    color: AppColors.teal),
   RepairCategory(label: 'Router', color: AppColors.teal),
@@ -67,10 +66,8 @@ const List<RecentRepair> recentRepairs = [
       status: 'Paused', accentColor: AppColors.orange, icon: Icons.pedal_bike_rounded),
 ];
 
-// ── SCREEN
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -79,20 +76,15 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategory = 0;
   int _selectedNav = 0;
 
-  // ── NAV TAP — center FAB (index 2) pushes AR camera
-  void _onNavTap(int index) {
-    setState(() => _selectedNav = index);
-  }
+  void _onNavTap(int index) => setState(() => _selectedNav = index);
 
-  // ── ALL 4 SCREENS for IndexedStack
   List<Widget> get _screens => [
-    _homeContent(),                          // 0 — Home
-    const TutorialScreen(showNav: false),    // 1 — Tutorials
-    const ProfileScreen(showNav: false),     // 2 — Profile
-    const SettingsScreen(showNav: false),    // 3 — Settings
+    _homeContent(),
+    const TutorialScreen(showNav: false),
+    const ProfileScreen(showNav: false),
+    const SettingsScreen(showNav: false),
   ];
 
-  // ── COLOR HELPERS
   Color _statusColor(String status) => switch (status) {
     'Done'        => AppColors.success,
     'In progress' => AppColors.teal,
@@ -102,55 +94,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color _diffColor(String diff) => switch (diff) {
     'Easy' => AppColors.teal,
-    'Med'  => Colors.orange,
-    'Hard' => AppColors.red,
+    'Med'  => AppColors.warning,
+    'Hard' => AppColors.danger,
     _      => Colors.white38,
   };
 
-  // ── BUILD
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-
-            // ── IndexedStack switches content, nav stays fixed
-            Expanded(
-              child: IndexedStack(
-                index: _selectedNav,
-                children: _screens,
-              ),
-            ),
-
-            // ── Fixed bottom nav always visible
-            _buildBottomNav(),
-          ],
-        ),
+        child: Column(children: [
+          Expanded(child: IndexedStack(index: _selectedNav, children: _screens)),
+          _buildBottomNav(),
+        ]),
       ),
     );
   }
 
-  // ── HOME CONTENT (extracted so IndexedStack can hold it)
   Widget _homeContent() {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          _buildSearchBar(),
-          _buildScanBanner(),
-          _buildSectionHeader('Categories', 'See all'),
-          _buildCategoryChips(),
-          _buildSectionHeader('Featured', 'See all'),
-          _buildFeaturedCards(),
-          _buildSectionHeader('Recent repairs', 'History'),
-          _buildRecentRepairs(),
-          const SizedBox(height: 20),
-        ],
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _buildHeader(),
+        _buildSearchBar(),
+        _buildScanBanner(),
+        AppSectionHeader(title: 'Categories', action: 'See all'),
+        _buildCategoryChips(),
+        AppSectionHeader(title: 'Featured', action: 'See all'),
+        _buildFeaturedCards(),
+        AppSectionHeader(title: 'Recent repairs', action: 'History'),
+        _buildRecentRepairs(),
+        const SizedBox(height: 20),
+      ]),
     );
   }
 
@@ -160,39 +136,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Good morning,', style: GoogleFonts.dmSans(
-                fontSize: 14, color: Colors.white.withOpacity(0.35),
-              )),
-              const SizedBox(height: 2),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: 'Fix', style: GoogleFonts.syne(
-                    fontSize: 26, fontWeight: FontWeight.w800,
-                    color: Colors.white, letterSpacing: -0.5,
-                  )),
-                  TextSpan(text: 'AR', style: GoogleFonts.syne(
-                    fontSize: 26, fontWeight: FontWeight.w800,
-                    color: AppColors.teal, letterSpacing: -0.5,
-                  )),
-                ]),
-              ),
-            ],
-          ),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Good morning,', style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.white35)),
+            const SizedBox(height: 2),
+            RichText(text: TextSpan(children: [
+              TextSpan(text: 'Fix', style: GoogleFonts.syne(fontSize: 26, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -0.5)),
+              TextSpan(text: 'AR', style: GoogleFonts.syne(fontSize: 26, fontWeight: FontWeight.w800, color: AppColors.teal, letterSpacing: -0.5)),
+            ])),
+          ]),
           Container(
             width: 42, height: 42,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft, end: Alignment.bottomRight,
-                colors: [AppColors.teal, AppColors.blue],
-              ),
-            ),
-            child: Center(child: Text('KK', style: GoogleFonts.syne(
-              fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white,
-            ))),
+            decoration: const BoxDecoration(shape: BoxShape.circle, gradient: AppGradients.brandDiagonal),
+            child: Center(child: Text('KK', style: GoogleFonts.syne(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white))),
           ),
         ],
       ),
@@ -205,31 +160,22 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         height: 46,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          color: AppColors.white5, borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.white8),
         ),
-        child: Row(
-          children: [
-            const SizedBox(width: 14),
-            Icon(Icons.search_rounded, color: Colors.white.withOpacity(0.3), size: 18),
-            const SizedBox(width: 10),
-            Text('Search repairs, parts, guides...', style: GoogleFonts.dmSans(
-              fontSize: 13, color: Colors.white.withOpacity(0.25),
-            )),
-            const Spacer(),
-            Container(
-              margin: const EdgeInsets.only(right: 10),
-              width: 28, height: 28,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white.withOpacity(0.05),
-              ),
-              child: Icon(Icons.tune_rounded,
-                  color: Colors.white.withOpacity(0.25), size: 15),
-            ),
-          ],
-        ),
+        child: Row(children: [
+          const SizedBox(width: 14),
+          Icon(Icons.search_rounded, color: AppColors.white30, size: 18),
+          const SizedBox(width: 10),
+          Text('Search repairs, parts, guides...', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.white25)),
+          const Spacer(),
+          Container(
+            margin: const EdgeInsets.only(right: 10),
+            width: 28, height: 28,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.white5),
+            child: Icon(Icons.tune_rounded, color: AppColors.white25, size: 15),
+          ),
+        ]),
       ),
     );
   }
@@ -243,68 +189,28 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              colors: [AppColors.bannerStart, AppColors.bannerEnd],
-            ),
+            gradient: AppGradients.scanBanner,
             border: Border.all(color: AppColors.teal.withOpacity(0.2)),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 50, height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft, end: Alignment.bottomRight,
-                    colors: [AppColors.teal, AppColors.blue],
-                  ),
-                ),
-                child: const Icon(Icons.document_scanner_rounded,
-                    color: Colors.white, size: 24),
-              ),
-              const SizedBox(width: 14),
-              Expanded(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Scan a device', style: GoogleFonts.syne(
-                    fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white,
-                  )),
-                  const SizedBox(height: 3),
-                  Text('Point camera to detect & repair', style: GoogleFonts.dmSans(
-                    fontSize: 11, color: Colors.white.withOpacity(0.35),
-                  )),
-                ],
-              )),
-              Container(
-                width: 28, height: 28,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                      color: AppColors.teal.withOpacity(0.35)),
-                ),
-                child: const Icon(Icons.arrow_forward_rounded,
-                    color: AppColors.teal, size: 14),
-              ),
-            ],
-          ),
+          child: Row(children: [
+            Container(
+              width: 50, height: 50,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), gradient: AppGradients.brandDiagonal),
+              child: const Icon(Icons.document_scanner_rounded, color: Colors.white, size: 24),
+            ),
+            const SizedBox(width: 14),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Scan a device', style: GoogleFonts.syne(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+              const SizedBox(height: 3),
+              Text('Point camera to detect & repair', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.white35)),
+            ])),
+            Container(
+              width: 28, height: 28,
+              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.teal.withOpacity(0.35))),
+              child: const Icon(Icons.arrow_forward_rounded, color: AppColors.teal, size: 14),
+            ),
+          ]),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title, String action) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: GoogleFonts.syne(
-            fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white,
-          )),
-          Text(action, style: GoogleFonts.dmSans(
-            fontSize: 12, color: AppColors.teal,
-          )),
-        ],
       ),
     );
   }
@@ -323,38 +229,24 @@ class _HomeScreenState extends State<HomeScreen> {
           return GestureDetector(
             onTap: () => setState(() => _selectedCategory = index),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
+              duration: const Duration(milliseconds: 250), curve: Curves.easeInOut,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: isActive
-                    ? cat.color.withOpacity(0.12)
-                    : Colors.white.withOpacity(0.04),
-                border: Border.all(
-                  color: isActive
-                      ? cat.color.withOpacity(0.4)
-                      : Colors.white.withOpacity(0.08),
+                color: isActive ? cat.color.withOpacity(0.12) : AppColors.white4,
+                border: Border.all(color: isActive ? cat.color.withOpacity(0.4) : AppColors.white8),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  width: 6, height: 6,
+                  decoration: BoxDecoration(shape: BoxShape.circle,
+                      color: isActive ? cat.color : AppColors.white20),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    width: 6, height: 6,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isActive ? cat.color : Colors.white.withOpacity(0.2),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(cat.label, style: GoogleFonts.dmSans(
-                    fontSize: 12, fontWeight: FontWeight.w500,
-                    color: isActive ? cat.color : Colors.white.withOpacity(0.45),
-                  )),
-                ],
-              ),
+                const SizedBox(width: 6),
+                Text(cat.label, style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500,
+                    color: isActive ? cat.color : AppColors.white45)),
+              ]),
             ),
           );
         },
@@ -384,10 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: recentRepairs.map((repair) => Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: RecentRepairItem(
-            repair: repair,
-            statusColor: _statusColor(repair.status),
-          ),
+          child: RecentRepairItem(repair: repair, statusColor: _statusColor(repair.status)),
         )).toList(),
       ),
     );
@@ -397,37 +286,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: Border(top: BorderSide(
-          color: Colors.white.withOpacity(0.06), width: 1,
-        )),
+        border: Border(top: BorderSide(color: AppColors.white6, width: 1)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          NavItem(icon: Icons.home_rounded, label: 'Home',
-              isActive: _selectedNav == 0, onTap: () => _onNavTap(0)),
-          NavItem(icon: Icons.menu_book_rounded, label: 'Tutorials',
-              isActive: _selectedNav == 1, onTap: () => _onNavTap(1)),
-
-          // Center Scan FAB — pushes over nav, doesn't switch index
+          NavItem(icon: Icons.home_rounded, label: 'Home', isActive: _selectedNav == 0, onTap: () => _onNavTap(0)),
+          NavItem(icon: Icons.menu_book_rounded, label: 'Tutorials', isActive: _selectedNav == 1, onTap: () => _onNavTap(1)),
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, '/ar-camera'),
             child: Container(
               width: 54, height: 54,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                gradient: AppGradients.brandDiagonal,
-              ),
-              child: const Icon(Icons.document_scanner_rounded,
-                  color: Colors.white, size: 24),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), gradient: AppGradients.brandDiagonal),
+              child: const Icon(Icons.document_scanner_rounded, color: Colors.white, size: 24),
             ),
           ),
-
-          NavItem(icon: Icons.person_rounded, label: 'Profile',
-              isActive: _selectedNav == 2, onTap: () => _onNavTap(2)),
-          NavItem(icon: Icons.settings_rounded, label: 'Settings',
-              isActive: _selectedNav == 3, onTap: () => _onNavTap(3)),
+          NavItem(icon: Icons.person_rounded, label: 'Profile', isActive: _selectedNav == 2, onTap: () => _onNavTap(2)),
+          NavItem(icon: Icons.settings_rounded, label: 'Settings', isActive: _selectedNav == 3, onTap: () => _onNavTap(3)),
         ],
       ),
     );

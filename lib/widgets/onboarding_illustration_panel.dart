@@ -1,5 +1,4 @@
-import 'package:fix_ar/constants/constant.dart';
-import 'package:fix_ar/screens/onboarding_screen.dart';
+import 'package:fix_ar/screens/onboarding/onboarding_screen.dart';
 import 'package:fix_ar/widgets/bracket_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,14 +10,16 @@ class OnboardingIllustrationPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: switch(illustration){
-        OnboardingIllustration.pointAndDetect=>const _PointDetectIllustration(),
-        OnboardingIllustration.voiceGuided=> const _VoiceGuidedIllustration(),
-        OnboardingIllustration.community=> const _CommunityIllustration(),
+      child: switch (illustration) {
+        OnboardingIllustration.pointAndDetect =>
+          const _PointDetectIllustration(),
+        OnboardingIllustration.voiceGuided => const _VoiceGuidedIllustration(),
+        OnboardingIllustration.community => const _CommunityIllustration(),
       },
     );
   }
 }
+
 class _PointDetectIllustration extends StatefulWidget {
   const _PointDetectIllustration();
 
@@ -29,7 +30,6 @@ class _PointDetectIllustration extends StatefulWidget {
 
 class _PointDetectIllustrationState extends State<_PointDetectIllustration>
     with TickerProviderStateMixin {
-
   late AnimationController _scanController;
   late Animation<double> _scanAnim;
 
@@ -74,26 +74,26 @@ class _PointDetectIllustrationState extends State<_PointDetectIllustration>
       height: illustrationHeight,
       child: Stack(
         children: [
-
           // ── Background grid
-          Positioned.fill(
-            child: CustomPaint(painter: _GridPainter()),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _GridPainter())),
 
           // ── Scanline
           AnimatedBuilder(
             animation: _scanAnim,
             builder: (_, __) => Positioned(
               top: illustrationHeight * _scanAnim.value,
-              left: 0, right: 0,
+              left: 0,
+              right: 0,
               child: Container(
                 height: 1,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Colors.transparent,
-                    AppColors.teal.withOpacity(0.3),
-                    Colors.transparent,
-                  ]),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      const Color(0xFF00D2B4).withOpacity(0.3),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -106,9 +106,9 @@ class _PointDetectIllustrationState extends State<_PointDetectIllustration>
               height: 110,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: AppColors.illustrationDevice,
+                color: const Color(0xFF1C2A3E),
                 border: Border.all(
-                  color: AppColors.blue.withOpacity(0.3),
+                  color: const Color(0xFF0077FF).withOpacity(0.3),
                   width: 1,
                 ),
               ),
@@ -126,37 +126,34 @@ class _PointDetectIllustrationState extends State<_PointDetectIllustration>
           ),
 
           // ── AR Label: CPU
-          FadeTransition(
-            opacity: _labelFade,
-            child: Positioned(
-              top: illustrationHeight * 0.36,
-              left: size.width * 0.62,
-              child: _ARLabel(label: 'CPU', color: AppColors.teal),
+          Positioned(
+            top: illustrationHeight * 0.36,
+            left: size.width * 0.62,
+            child: FadeTransition(
+              opacity: _labelFade,
+              child: _ARLabel(label: 'CPU', color: const Color(0xFF00D2B4)),
             ),
           ),
 
           // ── AR Label: RAM
-          FadeTransition(
-            opacity: _labelFade,
-            child: Positioned(
-              top: illustrationHeight * 0.48,
-              left: size.width * 0.60,
-              child: _ARLabel(
-                label: 'RAM',
-                color: AppColors.blue,
-              ),
+          Positioned(
+            top: illustrationHeight * 0.48,
+            left: size.width * 0.60,
+            child: FadeTransition(
+              opacity: _labelFade,
+              child: _ARLabel(label: 'RAM', color: const Color(0xFF0077FF)),
             ),
           ),
 
           // ── AR Label: PSU
-          FadeTransition(
-            opacity: _labelFade,
-            child: Positioned(
-              top: illustrationHeight * 0.38,
-              right: size.width * 0.62,
+          Positioned(
+            top: illustrationHeight * 0.38,
+            right: size.width * 0.62,
+            child: FadeTransition(
+              opacity: _labelFade,
               child: _ARLabel(
                 label: 'PSU',
-                color: AppColors.teal,
+                color: const Color(0xFF00D2B4),
                 alignRight: true,
               ),
             ),
@@ -170,22 +167,47 @@ class _PointDetectIllustrationState extends State<_PointDetectIllustration>
   }
 
   List<Widget> _screenBrackets(Size size, double h) {
-    const c = AppColors.teal;
+    const c = Color(0xFF00D2B4);
     const op = 0.4;
     const s = 20.0;
 
     return [
-      Positioned(top: 48, left: 20,
-          child: _CornerBracket(size: s, color: c.withOpacity(op), topLeft: true)),
-      Positioned(top: 48, right: 20,
-          child: _CornerBracket(size: s, color: c.withOpacity(op), topRight: true)),
-      Positioned(bottom: 0, left: 20,
-          child: _CornerBracket(size: s, color: c.withOpacity(op), bottomLeft: true)),
-      Positioned(bottom: 0, right: 20,
-          child: _CornerBracket(size: s, color: c.withOpacity(op), bottomRight: true)),
+      Positioned(
+        top: 48,
+        left: 20,
+        child: _CornerBracket(size: s, color: c.withOpacity(op), topLeft: true),
+      ),
+      Positioned(
+        top: 48,
+        right: 20,
+        child: _CornerBracket(
+          size: s,
+          color: c.withOpacity(op),
+          topRight: true,
+        ),
+      ),
+      Positioned(
+        bottom: 0,
+        left: 20,
+        child: _CornerBracket(
+          size: s,
+          color: c.withOpacity(op),
+          bottomLeft: true,
+        ),
+      ),
+      Positioned(
+        bottom: 0,
+        right: 20,
+        child: _CornerBracket(
+          size: s,
+          color: c.withOpacity(op),
+          bottomRight: true,
+        ),
+      ),
     ];
   }
 }
+
 class _VoiceGuidedIllustration extends StatefulWidget {
   const _VoiceGuidedIllustration();
 
@@ -196,7 +218,6 @@ class _VoiceGuidedIllustration extends StatefulWidget {
 
 class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _pulseController;
   late Animation<double> _pulseAnim;
 
@@ -229,10 +250,11 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
       child: Stack(
         alignment: Alignment.center,
         children: [
-
           // Background
           Positioned.fill(
-            child: CustomPaint(painter: _GridPainter(color: AppColors.blue)),
+            child: CustomPaint(
+              painter: _GridPainter(color: const Color(0xFF0077FF)),
+            ),
           ),
 
           // Camera frame
@@ -242,25 +264,24 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: AppColors.blue.withOpacity(0.35),
+                color: const Color(0xFF0077FF).withOpacity(0.35),
                 width: 1.5,
               ),
-              color: AppColors.illustrationCamera,
+              color: const Color(0xFF030810),
             ),
             child: Stack(
               children: [
-
                 // Target object inside camera
                 Positioned(
-                  top: 24, left: 20,
+                  top: 24,
+                  left: 20,
                   child: Container(
-                    width: 80, height: 60,
+                    width: 80,
+                    height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
-                      color: AppColors.illustrationTarget,
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.06),
-                      ),
+                      color: const Color(0xFF1A2535),
+                      border: Border.all(color: Colors.white.withOpacity(0.06)),
                     ),
                   ),
                 ),
@@ -269,16 +290,17 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
                 AnimatedBuilder(
                   animation: _pulseAnim,
                   builder: (_, __) => Positioned(
-                    top: 20, left: 16,
+                    top: 20,
+                    left: 16,
                     child: Container(
                       width: 88,
                       height: 68,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: AppColors.teal.withOpacity(
-                            0.4 + _pulseAnim.value * 0.6,
-                          ),
+                          color: const Color(
+                            0xFF00D2B4,
+                          ).withOpacity(0.4 + _pulseAnim.value * 0.6),
                           width: 1.5,
                         ),
                       ),
@@ -288,22 +310,28 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
 
                 // "Detected" badge
                 Positioned(
-                  bottom: 8, right: 8,
-                  child: _ARLabel(label: 'Router detected', color: AppColors.teal),
+                  bottom: 8,
+                  right: 8,
+                  child: _ARLabel(
+                    label: 'Router detected',
+                    color: const Color(0xFF00D2B4),
+                  ),
                 ),
 
                 // AR arrow pointing right
                 Positioned(
-                  top: 52, left: 108,
+                  top: 52,
+                  left: 108,
                   child: Row(
                     children: [
                       Container(
-                        width: 30, height: 1.5,
-                        color: AppColors.teal,
+                        width: 30,
+                        height: 1.5,
+                        color: const Color(0xFF00D2B4),
                       ),
                       const Icon(
                         Icons.arrow_right,
-                        color: AppColors.teal,
+                        color: Color(0xFF00D2B4),
                         size: 14,
                       ),
                     ],
@@ -320,7 +348,7 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
             child: _StepChip(
               step: '01',
               label: 'Remove cover',
-              color: AppColors.blue,
+              color: const Color(0xFF0077FF),
             ),
           ),
 
@@ -331,7 +359,7 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
             child: _StepChip(
               step: '02',
               label: 'Locate antenna',
-              color: AppColors.teal,
+              color: const Color(0xFF00D2B4),
             ),
           ),
 
@@ -342,17 +370,18 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 26, height: 26,
+                  width: 26,
+                  height: 26,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.teal.withOpacity(0.15),
+                    color: const Color(0xFF00D2B4).withOpacity(0.15),
                     border: Border.all(
-                      color: AppColors.teal.withOpacity(0.4),
+                      color: const Color(0xFF00D2B4).withOpacity(0.4),
                     ),
                   ),
                   child: const Icon(
                     Icons.mic,
-                    color: AppColors.teal,
+                    color: Color(0xFF00D2B4),
                     size: 14,
                   ),
                 ),
@@ -372,17 +401,16 @@ class _VoiceGuidedIllustrationState extends State<_VoiceGuidedIllustration>
     );
   }
 }
+
 class _CommunityIllustration extends StatefulWidget {
   const _CommunityIllustration();
 
   @override
-  State<_CommunityIllustration> createState() =>
-      _CommunityIllustrationState();
+  State<_CommunityIllustration> createState() => _CommunityIllustrationState();
 }
 
 class _CommunityIllustrationState extends State<_CommunityIllustration>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _fadeController;
   late Animation<double> _fadeAnim;
 
@@ -393,10 +421,7 @@ class _CommunityIllustrationState extends State<_CommunityIllustration>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     )..forward();
-    _fadeAnim = CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeOut,
-    );
+    _fadeAnim = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
   }
 
   @override
@@ -417,10 +442,9 @@ class _CommunityIllustrationState extends State<_CommunityIllustration>
         child: Stack(
           alignment: Alignment.center,
           children: [
-
             Positioned.fill(
               child: CustomPaint(
-                painter: _GridPainter(color: AppColors.teal),
+                painter: _GridPainter(color: const Color(0xFF00D2B4)),
               ),
             ),
 
@@ -457,19 +481,23 @@ class _CommunityIllustrationState extends State<_CommunityIllustration>
             Positioned(
               bottom: h * 0.06,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.orange.withOpacity(0.12),
-                  border: Border.all(
-                    color: Colors.orange.withOpacity(0.35),
-                  ),
+                  border: Border.all(color: Colors.orange.withOpacity(0.35)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.warning_amber_rounded,
-                        color: Colors.orange, size: 13),
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      color: Colors.orange,
+                      size: 13,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       'Safety warnings included',
@@ -482,13 +510,13 @@ class _CommunityIllustrationState extends State<_CommunityIllustration>
                 ),
               ),
             ),
-
           ],
         ),
       ),
     );
   }
 }
+
 // ── AR floating label with dot + line
 class _ARLabel extends StatelessWidget {
   final String label;
@@ -589,20 +617,19 @@ class _TutorialCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: AppColors.cardDark,
-        border: Border.all(
-          color: AppColors.teal.withOpacity(0.12),
-        ),
+        color: const Color(0xFF0D1525),
+        border: Border.all(color: const Color(0xFF00D2B4).withOpacity(0.12)),
       ),
       child: Row(
         children: [
           Container(
-            width: 36, height: 36,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: AppColors.teal.withOpacity(0.1),
+              color: const Color(0xFF00D2B4).withOpacity(0.1),
             ),
-            child: Icon(icon, color: AppColors.teal, size: 18),
+            child: Icon(icon, color: const Color(0xFF00D2B4), size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -632,7 +659,7 @@ class _TutorialCard extends StatelessWidget {
             views,
             style: GoogleFonts.dmSans(
               fontSize: 10,
-              color: AppColors.teal.withOpacity(0.6),
+              color: const Color(0xFF00D2B4).withOpacity(0.6),
             ),
           ),
         ],
@@ -659,7 +686,8 @@ class _CornerBracket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size, height: size,
+      width: size,
+      height: size,
       child: CustomPaint(
         painter: BracketPainter(
           color: color,
@@ -677,7 +705,7 @@ class _CornerBracket extends StatelessWidget {
 // ── Grid background painter
 class _GridPainter extends CustomPainter {
   final Color color;
-  const _GridPainter({this.color = AppColors.teal});
+  const _GridPainter({this.color = const Color(0xFF00D2B4)});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -703,7 +731,7 @@ class _MotherboardPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.blue.withOpacity(0.2)
+      ..color = const Color(0xFF0077FF).withOpacity(0.2)
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
 
@@ -721,7 +749,7 @@ class _MotherboardPainter extends CustomPainter {
     );
     // CPU chip
     final chipPaint = Paint()
-      ..color = AppColors.teal.withOpacity(0.35)
+      ..color = const Color(0xFF00D2B4).withOpacity(0.35)
       ..strokeWidth = 0.8
       ..style = PaintingStyle.stroke;
 
@@ -729,7 +757,8 @@ class _MotherboardPainter extends CustomPainter {
       RRect.fromRectAndRadius(
         Rect.fromCenter(
           center: Offset(size.width / 2, size.height / 2),
-          width: 36, height: 28,
+          width: 36,
+          height: 28,
         ),
         const Radius.circular(4),
       ),
@@ -738,7 +767,7 @@ class _MotherboardPainter extends CustomPainter {
 
     // Small cap circles
     final dotPaint = Paint()
-      ..color = AppColors.blue.withOpacity(0.3)
+      ..color = const Color(0xFF0077FF).withOpacity(0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.6;
 
@@ -755,7 +784,7 @@ class _ARBoxPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.teal.withOpacity(0.5)
+      ..color = const Color(0xFF00D2B4).withOpacity(0.5)
       ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
@@ -773,9 +802,15 @@ class _ARBoxPainter extends CustomPainter {
     canvas.drawLine(Offset(0, size.height), Offset(l, size.height), paint);
     // Bottom-right
     canvas.drawLine(
-        Offset(size.width - l, size.height), Offset(size.width, size.height), paint);
+      Offset(size.width - l, size.height),
+      Offset(size.width, size.height),
+      paint,
+    );
     canvas.drawLine(
-        Offset(size.width, size.height - l), Offset(size.width, size.height), paint);
+      Offset(size.width, size.height - l),
+      Offset(size.width, size.height),
+      paint,
+    );
   }
 
   @override

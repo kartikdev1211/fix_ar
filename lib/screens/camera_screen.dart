@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:fix_ar/constants/constant.dart';
+import 'package:fix_ar/widgets/app_widgets.dart';
 
 import 'package:camera/camera.dart';
-import 'package:fix_ar/constants/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -56,17 +57,17 @@ class _ARCameraScreenState extends State<ARCameraScreen>
   final List<ARLabel> _arLabels = [
     ARLabel(
       text: 'Power',
-      color: AppColors.teal,
+      color: Color(0xFF00D2B4),
       position: Offset(0.72, 0.42),
     ),
     ARLabel(
       text: 'Reset',
-      color: AppColors.blue,
+      color: Color(0xFF0077FF),
       position: Offset(0.70, 0.48),
     ),
     ARLabel(
       text: 'Antenna',
-      color: AppColors.orange,
+      color: Color(0xFFFF6B35),
       position: Offset(0.10, 0.37),
     ),
   ];
@@ -127,8 +128,8 @@ class _ARCameraScreenState extends State<ARCameraScreen>
     );
     _cardSlide = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
         .animate(
-      CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
-    );
+          CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
+        );
     _cardFade = CurvedAnimation(parent: _cardController, curve: Curves.easeOut);
   }
 
@@ -175,7 +176,7 @@ class _ARCameraScreenState extends State<ARCameraScreen>
           model: "Archer C6",
           guideCount: 4,
           confidence: 82,
-          accent: AppColors.teal,
+          accent: Color(0xFF00D2B4),
           icon: Icons.router_rounded,
         );
       });
@@ -310,7 +311,7 @@ class _ARCameraScreenState extends State<ARCameraScreen>
             mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(
-                color: AppColors.teal,
+                color: Color(0xFF00D2B4),
                 strokeWidth: 2,
               ),
               const SizedBox(height: 16),
@@ -420,7 +421,7 @@ class _ARCameraScreenState extends State<ARCameraScreen>
                     width: 7, height: 7,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.teal,
+                      color: Color(0xFF00D2B4),
                     ),
                   ),
                   const SizedBox(width: 7),
@@ -462,7 +463,7 @@ class _ARCameraScreenState extends State<ARCameraScreen>
                       value: (_detectedDevice?.confidence ?? 0) / 100,
                       minHeight: 3,
                       backgroundColor: Colors.white.withOpacity(0.08),
-                      valueColor: const AlwaysStoppedAnimation(AppColors.teal),
+                      valueColor: const AlwaysStoppedAnimation(Color(0xFF00D2B4)),
                     ),
                   ),
                 ],
@@ -637,7 +638,7 @@ class _ARCameraScreenState extends State<ARCameraScreen>
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [AppColors.teal, AppColors.blue],
+                          colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
                         ),
                       ),
                       child: const Icon(
@@ -743,7 +744,7 @@ class _ARCameraScreenState extends State<ARCameraScreen>
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       gradient: const LinearGradient(
-                        colors: [AppColors.teal, AppColors.blue],
+                        colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
                       ),
                     ),
                     child: Center(
@@ -813,7 +814,9 @@ class _ARCameraScreenState extends State<ARCameraScreen>
                     horizontal: 24, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  gradient: AppGradients.brand,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
+                  ),
                 ),
                 child: Text('Try Again', style: GoogleFonts.syne(
                   fontSize: 13, fontWeight: FontWeight.w700,

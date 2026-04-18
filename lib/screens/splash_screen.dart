@@ -1,4 +1,3 @@
-import 'package:fix_ar/constants/constant.dart';
 import 'package:fix_ar/widgets/bracket_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFF080810),
       body: Stack(
         children: [
           Positioned(
@@ -79,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.teal.withOpacity(0.18),
+                    const Color(0xFF00D2B4).withOpacity(0.18),
                     Colors.transparent,
                   ],
                 ),
@@ -107,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen>
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        AppColors.teal.withOpacity(0.25),
+                        const Color(0xFF00D2B4).withOpacity(0.25),
                         Colors.transparent,
                       ],
                     ),
@@ -126,9 +125,17 @@ class _SplashScreenState extends State<SplashScreen>
                   height: 80,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
-                    gradient: AppGradients.brandDiagonal,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
+                    ),
                   ),
-                  child: const Icon(Icons.build_rounded, color: Colors.white, size: 30),
+                  child: const Icon(
+                    Icons.build_rounded,
+                    color: Colors.white,
+                    size: 30,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -141,12 +148,14 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 const SizedBox(height: 4),
+
+                // Tagline
                 Text(
                   'AR REPAIR ASSISTANT',
                   style: GoogleFonts.dmSans(
                     fontSize: 11,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.teal.withOpacity(0.8),
+                    color: const Color(0xFF00D2B4).withOpacity(0.8),
                     letterSpacing: 2.5,
                   ),
                 ),
@@ -158,7 +167,7 @@ class _SplashScreenState extends State<SplashScreen>
                       width: 56,
                       height: 2,
                       decoration: BoxDecoration(
-                        color: AppColors.white8,
+                        color: Colors.white.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(2),
                       ),
                       child: FractionallySizedBox(
@@ -167,7 +176,9 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(2),
-                            gradient: AppGradients.brand,
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
+                            ),
                           ),
                         ),
                       ),
@@ -184,16 +195,20 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildRing(double size, double opacity) {
     return Container(
-      width: size, height: size,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.teal.withOpacity(opacity), width: 1),
+        border: Border.all(
+          color: const Color(0xFF00D2B4).withOpacity(opacity),
+          width: 1,
+        ),
       ),
     );
   }
 
   List<Widget> _buildCornerBrackets(Size size) {
-    const color = AppColors.teal;
+    const color = Color(0xFF00D2B4);
     const opacity = 0.5;
     const bSize = 22.0;
     const bWidth = 1.5;
@@ -201,8 +216,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     Widget bracket({
       required Alignment align,
-      bool top = false, bool bottom = false,
-      bool left = false, bool right = false,
+      bool top = false,
+      bool bottom = false,
+      bool left = false,
+      bool right = false,
     }) {
       return Positioned(
         top: top ? padding + 40 : null,
@@ -210,13 +227,16 @@ class _SplashScreenState extends State<SplashScreen>
         left: left ? padding : null,
         right: right ? padding : null,
         child: SizedBox(
-          width: bSize, height: bSize,
+          width: bSize,
+          height: bSize,
           child: CustomPaint(
             painter: BracketPainter(
               color: color.withOpacity(opacity),
               strokeWidth: bWidth,
-              showTop: top, showBottom: bottom,
-              showLeft: left, showRight: right,
+              showTop: top,
+              showBottom: bottom,
+              showLeft: left,
+              showRight: right,
             ),
           ),
         ),

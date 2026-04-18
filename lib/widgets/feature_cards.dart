@@ -1,6 +1,6 @@
 // ── FEATURED CARD
-import 'package:fix_ar/constants/constant.dart';
 import 'package:fix_ar/screens/home_screen.dart';
+import 'package:fix_ar/constants/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +8,11 @@ class FeaturedCard extends StatelessWidget {
   final FeaturedTutorial tutorial;
   final Color diffColor;
 
-  const FeaturedCard({super.key, required this.tutorial, required this.diffColor});
+  const FeaturedCard({
+    super.key,
+    required this.tutorial,
+    required this.diffColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +20,20 @@ class FeaturedCard extends StatelessWidget {
       width: 148,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: AppColors.cardDark,
-        border: Border.all(
-          color: Colors.white.withOpacity(0.07),
-          width: 1,
-        ),
+        color: const Color(0xFF0D1525),
+        border: Border.all(color: AppColors.white7, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           // Icon area
           Container(
             height: 80,
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
               color: tutorial.accentColor.withOpacity(0.08),
             ),
             child: Center(
@@ -61,13 +63,12 @@ class FeaturedCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 // Tag
                 Text(
                   tutorial.tag,
                   style: GoogleFonts.dmSans(
                     fontSize: 10,
-                    color: Colors.white.withOpacity(0.3),
+                    color: AppColors.white30,
                   ),
                 ),
 
@@ -96,12 +97,13 @@ class FeaturedCard extends StatelessWidget {
                       tutorial.views,
                       style: GoogleFonts.dmSans(
                         fontSize: 9,
-                        color: Colors.white.withOpacity(0.25),
+                        color: AppColors.white25,
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2,
+                        horizontal: 6,
+                        vertical: 2,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
@@ -118,11 +120,9 @@ class FeaturedCard extends StatelessWidget {
                     ),
                   ],
                 ),
-
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -134,7 +134,11 @@ class RecentRepairItem extends StatelessWidget {
   final RecentRepair repair;
   final Color statusColor;
 
-  const RecentRepairItem({super.key, required this.repair, required this.statusColor});
+  const RecentRepairItem({
+    super.key,
+    required this.repair,
+    required this.statusColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -142,15 +146,11 @@ class RecentRepairItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: Colors.white.withOpacity(0.03),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.06),
-          width: 1,
-        ),
+        color: AppColors.white4,
+        border: Border.all(color: AppColors.white6, width: 1),
       ),
       child: Row(
         children: [
-
           // Icon
           Container(
             width: 40,
@@ -159,11 +159,7 @@ class RecentRepairItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color: repair.accentColor.withOpacity(0.1),
             ),
-            child: Icon(
-              repair.icon,
-              color: repair.accentColor,
-              size: 18,
-            ),
+            child: Icon(repair.icon, color: repair.accentColor, size: 18),
           ),
 
           const SizedBox(width: 12),
@@ -186,7 +182,7 @@ class RecentRepairItem extends StatelessWidget {
                   repair.subtitle,
                   style: GoogleFonts.dmSans(
                     fontSize: 10,
-                    color: Colors.white.withOpacity(0.3),
+                    color: AppColors.white30,
                   ),
                 ),
               ],
@@ -209,7 +205,6 @@ class RecentRepairItem extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -223,7 +218,8 @@ class NavItem extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const NavItem({super.key,
+  const NavItem({
+    super.key,
     required this.icon,
     required this.label,
     required this.isActive,
@@ -234,7 +230,7 @@ class NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isActive
         ? AppColors.teal
-        : Colors.white.withOpacity(0.3);
+        : AppColors.white30;
 
     return GestureDetector(
       onTap: onTap,
@@ -245,19 +241,17 @@ class NavItem extends StatelessWidget {
           const SizedBox(height: 4),
           isActive
               ? Container(
-            width: 4, height: 4,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.teal,
-            ),
-          )
+                  width: 4,
+                  height: 4,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFF00D2B4),
+                  ),
+                )
               : Text(
-            label,
-            style: GoogleFonts.dmSans(
-              fontSize: 10,
-              color: color,
-            ),
-          ),
+                  label,
+                  style: GoogleFonts.dmSans(fontSize: 10, color: color),
+                ),
         ],
       ),
     );
