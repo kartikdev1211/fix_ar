@@ -20,7 +20,7 @@ class OnboardingState {
     return OnboardingState(
       currentPage: currentPage ?? this.currentPage,
       isLastPage: isLastPage ?? this.isLastPage,
-      navigateToAuth: navigateToAuth ?? false,
+      navigateToAuth: navigateToAuth ?? this.navigateToAuth,
     );
   }
 }

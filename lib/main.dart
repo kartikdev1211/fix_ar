@@ -1,7 +1,8 @@
 import 'package:fix_ar/screens/auth/auth_screen.dart';
 import 'package:fix_ar/screens/auth/bloc/auth_bloc.dart';
-import 'package:fix_ar/screens/camera_screen.dart';
-import 'package:fix_ar/screens/home_screen.dart';
+import 'package:fix_ar/screens/camera/bloc/camera_bloc.dart';
+import 'package:fix_ar/screens/camera/camera_screen.dart';
+import 'package:fix_ar/screens/home/home_screen.dart';
 import 'package:fix_ar/screens/onboarding/bloc/onboarding_bloc.dart';
 import 'package:fix_ar/screens/onboarding/onboarding_screen.dart';
 import 'package:fix_ar/screens/parts_screen.dart';
@@ -28,14 +29,28 @@ class FixARApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/onboarding': (context) {
-          return BlocProvider(create:(_)=>OnboardingBloc(), child: const OnboardingScreen());
+          return BlocProvider(
+            create: (_) => OnboardingBloc(),
+            child: const OnboardingScreen(),
+          );
         },
         '/auth': (context) {
-          return BlocProvider(create:(_)=>AuthBloc(), child: const AuthScreen());
-          },
-        '/home': (context) => const HomeScreen(),
+          return BlocProvider(
+            create: (_) => AuthBloc(),
+            child: const AuthScreen(),
+          );
+        },
+        '/home': (context) {
+          return BlocProvider(
+            create: (_) => AuthBloc(),
+            child: const HomeScreen(),
+          );
+        },
         "/tutorials": (context) => const TutorialScreen(),
-        '/ar-camera': (context) => const ARCameraScreen(),
+        '/ar-camera': (context) => BlocProvider(
+          create: (_) => CameraBloc(),
+          child: const ARCameraScreen(),
+        ),
         '/repair-steps': (context) => const RepairStepsScreen(),
         '/parts': (context) => const PartsScreen(),
       },

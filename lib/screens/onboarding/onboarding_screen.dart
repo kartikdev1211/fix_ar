@@ -27,21 +27,21 @@ List<OnboardingData> onboardingSlides = [
     title: 'Point. Detect.\n',
     titleHighlight: 'Repair instantly.',
     description:
-    'Aim your camera at any device — router, PC, bike — and FixAR identifies every component with live AR overlays.',
+        'Aim your camera at any device — router, PC, bike — and FixAR identifies every component with live AR overlays.',
     illustration: OnboardingIllustration.pointAndDetect,
   ),
   OnboardingData(
     title: 'AR steps,\n',
     titleHighlight: 'voice guided.',
     description:
-    'Follow animated AR arrows and real-time overlays. Hear each step read aloud — hands stay on the repair, not the screen.',
+        'Follow animated AR arrows and real-time overlays. Hear each step read aloud — hands stay on the repair, not the screen.',
     illustration: OnboardingIllustration.voiceGuided,
   ),
   OnboardingData(
     title: 'Community\n',
     titleHighlight: 'repairs & parts.',
     description:
-    'Browse thousands of community repair tutorials. Get instant parts recommendations with safety warnings built in.',
+        'Browse thousands of community repair tutorials. Get instant parts recommendations with safety warnings built in.',
     illustration: OnboardingIllustration.community,
   ),
 ];
@@ -73,8 +73,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       duration: const Duration(milliseconds: 500),
     );
 
-    _contentFade =
-        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
+    _contentFade = CurvedAnimation(
+      parent: _contentController,
+      curve: Curves.easeOut,
+    );
 
     _contentSlide =
         Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero).animate(
@@ -115,59 +117,56 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OnboardingBloc(),
-      child: BlocListener<OnboardingBloc, OnboardingState>(
-        listener: (context, state) {
-          if (state.navigateToAuth) {
-            Navigator.pushReplacementNamed(context, "/auth");
-          }
-        },
-        child: BlocBuilder<OnboardingBloc, OnboardingState>(
-          builder: (context, state) {
-            final slide = onboardingSlides[state.currentPage];
-            final isLast = state.isLastPage;
+    return BlocListener<OnboardingBloc, OnboardingState>(
+      listener: (context, state) {
+        if (state.navigateToAuth) {
+          Navigator.pushReplacementNamed(context, "/auth");
+        }
+      },
+      child: BlocBuilder<OnboardingBloc, OnboardingState>(
+        builder: (context, state) {
+          final slide = onboardingSlides[state.currentPage];
+          final isLast = state.isLastPage;
 
-            return Scaffold(
-              backgroundColor: const Color(0xFF080810),
-              body: Stack(
-                children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: _onPageChanged,
-                    itemCount: onboardingSlides.length,
-                    itemBuilder: (context, index) {
-                      return OnboardingIllustrationPanel(
-                        illustration: onboardingSlides[index].illustration,
-                      );
-                    },
-                  ),
+          return Scaffold(
+            backgroundColor: const Color(0xFF080810),
+            body: Stack(
+              children: [
+                PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: _onPageChanged,
+                  itemCount: onboardingSlides.length,
+                  itemBuilder: (context, index) {
+                    return OnboardingIllustrationPanel(
+                      illustration: onboardingSlides[index].illustration,
+                    );
+                  },
+                ),
 
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: _buildBottomSheet(state),
-                  ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildBottomSheet(state),
+                ),
 
-                  Positioned(
-                    top: 80,
-                    right: 20,
-                    child: GestureDetector(
-                      onTap: _skip,
-                      child: Text(
-                        "Skip",
-                        style: GoogleFonts.dmSans(
-                          fontSize: 20,
-                          color: Colors.white30,
-                          fontWeight: FontWeight.w400,
-                        ),
+                Positioned(
+                  top: 80,
+                  right: 20,
+                  child: GestureDetector(
+                    onTap: _skip,
+                    child: Text(
+                      "Skip",
+                      style: GoogleFonts.dmSans(
+                        fontSize: 20,
+                        color: Colors.white30,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-        ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -256,8 +255,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             borderRadius: BorderRadius.circular(4),
             gradient: isActive
                 ? const LinearGradient(
-              colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
-            )
+                    colors: [Color(0xFF00D2B4), Color(0xFF0077FF)],
+                  )
                 : null,
           ),
         );

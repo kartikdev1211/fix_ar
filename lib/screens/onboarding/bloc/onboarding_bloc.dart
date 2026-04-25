@@ -3,7 +3,6 @@ import 'package:fix_ar/screens/onboarding/bloc/onboarding_event.dart';
 import 'package:fix_ar/screens/onboarding/bloc/onboarding_state.dart';
 import 'package:fix_ar/screens/onboarding/onboarding_screen.dart';
 
-
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   OnboardingBloc() : super(OnboardingState.initial()) {
     on<PageChanged>((event, emit) {
@@ -15,14 +14,15 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         ),
       );
     });
-    on<NextPressed>((event,emit){
-      if(state.isLastPage){
+    on<NextPressed>((event, emit) {
+      if (state.isLastPage) {
         emit(state.copyWith(navigateToAuth: true));
-      }else{
+      } else {
+        // Just reset navigateToAuth to false if we are not on last page
         emit(state.copyWith(navigateToAuth: false));
       }
     });
-    on<SkipPressed>((event,emit){
+    on<SkipPressed>((event, emit) {
       emit(state.copyWith(navigateToAuth: true));
     });
   }

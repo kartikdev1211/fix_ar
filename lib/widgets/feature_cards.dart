@@ -1,5 +1,5 @@
 // ── FEATURED CARD
-import 'package:fix_ar/screens/home_screen.dart';
+import 'package:fix_ar/screens/home/home_screen.dart';
 import 'package:fix_ar/constants/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -228,9 +228,7 @@ class NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive
-        ? AppColors.teal
-        : AppColors.white30;
+    final color = isActive ? AppColors.teal : AppColors.white30;
 
     return GestureDetector(
       onTap: onTap,
